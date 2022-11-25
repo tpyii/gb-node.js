@@ -21,8 +21,15 @@ module.exports = class Timer {
     }
   }
 
-  print() {
-    this.emitter.emit('print', this._getRemainingString())
+  print(remaining) {
+    const remaining = this.end - Date.now()
+
+    if (remaining < 0) {
+      clearInterval(this.timer)
+      this.emitter.emit('print', 'Timer finished')
+    } else {
+      this.emitter.emit('print', this._getRemainingString())
+    }
   }
 
   _getRemainingString() {
