@@ -18,7 +18,6 @@ module.exports = class Timer {
     } else {
       this.emitter.emit('print', 'Timer started')
       this.timer = setInterval(() => this.print(), 1000)
-      setTimeout(() => clearInterval(this.timer), 5000)
     }
   }
 
