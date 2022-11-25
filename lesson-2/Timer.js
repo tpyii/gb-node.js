@@ -7,29 +7,34 @@ module.exports = class Timer {
   }
 
   start() {
-    const remaining = this.end - Date.now()
-
-    if (Number.isNaN(remaining)) {
-      clearInterval(this.timer)
-      this.emitter.emit('print', 'Invalid value')
-    } else if (remaining < 0) {
-      clearInterval(this.timer)
-      this.emitter.emit('print', 'Timer finished')
-    } else {
+    if (this._check()) {
       this.emitter.emit('print', 'Timer started')
       this.timer = setInterval(() => this.print(), 1000)
     }
   }
 
-  print(remaining) {
-    const remaining = this.end - Date.now()
-
-    if (remaining < 0) {
-      clearInterval(this.timer)
-      this.emitter.emit('print', 'Timer finished')
-    } else {
+  print() {
+    if (this._check()) {
       this.emitter.emit('print', this._getRemainingString())
     }
+  }
+
+  _check() {
+    const remaining = this.end - Date.now()
+
+    if (Number.isNaN(remaining) || remaining < 0) {
+      clearInterval(this.timer)
+
+      if (Number.isNaN(remaining)) {
+        this.emitter.emit('print', 'Invalid value')
+      } else if (remaining < 0) {
+        this.emitter.emit('print', 'Timer finished')
+      }
+
+      return false
+    }
+
+    return true
   }
 
   _getRemainingString() {
